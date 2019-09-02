@@ -76,9 +76,9 @@ $(function() {
                 //checks that the menu-hidden class disappers
                 let menuIcon = document.querySelector('a.menu-icon-link');
                 menuIcon.click();
-                expect(document.body.classList.contains('menu-hidden'))
+                expect(document.body.classList.contains('menu-hidden')).toBe(false);
                  menuIcon.click();
-              
+                 expect(document.body.classList.contains('menu-hidden')).toBe(true);
             })
         });
     /* TODO: Write a new test suite named "Initial Entries" */
@@ -91,8 +91,13 @@ $(function() {
          */
 
         describe("Initial Entries", function (){
+            beforeEach(function(done) {
+                loadFeed(1, done);
+            });
+
             it("there is a single entry element within the feed container", function () {
-    
+                let feedDocument = document.querySelector('div.feed');
+                expect(feedDocument.children.length).toBeGreaterThan(0);
             });
     
         });
@@ -104,8 +109,20 @@ $(function() {
          */
       
         describe("New Feed Selection", function (){
+
+            let firstDocument, secondDocument;
+
+            beforeEach(function(done) {
+                loadFeed(3, function(){
+                    firstDocument = document.querySelector('div.feed').innerHTML;
+                    loadFeed(2, function() {
+                    secondDocument = document.querySelector('div.feed').innerHTML;
+                        done();
+                    });
+                });
+            });
             it("new feed is loaded by the loadfeed function", function () {
-    
+                expect(firstDocument).not.toBe(secondDocument);
             });
     
         });
